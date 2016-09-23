@@ -122,7 +122,43 @@ The main class is located in **gov.nist.hit.resources.deploy.client.App**
 - Refer to Methods Documentation to know what arguments are required for each command
 - You can use -help on a command to get indication on how to specify arguments
 
+### Example
 
+Launching the deployer
+```shell
+./deployer.jar -h [host] -u [username] -p [password]
+```
+```shell
+====== Welcome to HIT Resource Deployer ======
+To exit enter 'q'
+List of possible commands :
+- addOrUpdateTestPlan
+- addOrUpdateTestStep
+- addOrUpdateCFTestCase
+- addOrUpdateProfile
+- addOrUpdateConstraint
+- addOrUpdateValueSet
+- updateTestCase
+- updateTestGroup
+- addTestCaseP
+- addTestCaseG
+- addTestGroupP
+- addTestGroupG
+> 
+
+```
+Actions :
+
+- Type 'q' to quit the deployer
+- Type command name followed by arguments to execute command
+- Type 'help' for indications on how to use commands
+
+```shell
+> help
+usage: <command>
+ -i,--id <arg>    id of the container in case of addition
+ -z,--zip <arg>   url of the zip folder containing resource
+```
 
 
 
