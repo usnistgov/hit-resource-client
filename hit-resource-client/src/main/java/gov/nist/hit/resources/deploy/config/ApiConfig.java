@@ -1,14 +1,7 @@
 package gov.nist.hit.resources.deploy.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
-
-//@PropertySource(value = {"classpath:api-config.properties"})
 public class ApiConfig {
 	
-//	  @Autowired
-//	  private Environment env;
 	  private String context;
 	  private String mainMapping;
 	  private String addOrUpdateTestStep;
@@ -27,9 +20,6 @@ public class ApiConfig {
 	  
 	public ApiConfig() {
 		super();
-//		this.mainMapping = env.getProperty("api.main.mapping");
-//		this.addOrUpdateTestStep = env.getProperty("api.addOrUpdate.testStep");
-//		this.addTestCase = env.getProperty("api.addOrUpdate.test");
 	}
 	
 	
