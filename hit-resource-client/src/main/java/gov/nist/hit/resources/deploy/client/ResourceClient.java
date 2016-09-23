@@ -9,20 +9,20 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-public class Client {
+public class ResourceClient {
 
 	private String authorization;
 	private ApiConfig config;
 	private String accessPoint;
 	private RestTemplate tmpl;
 	
-	public Client(String host, String username, String password) {
+	public ResourceClient(String host, String username, String password) {
 		super();
     	this.authorization = token(username,password);
     	this.tmpl = new RestTemplate();
 	}
 	
-	public Client(String host, String username, String password, ApiConfig config) {
+	public ResourceClient(String host, String username, String password, ApiConfig config) {
 		this(host,username,password);
     	this.config = config;
     	this.accessPoint = host + config.getContext() + config.getMainMapping();

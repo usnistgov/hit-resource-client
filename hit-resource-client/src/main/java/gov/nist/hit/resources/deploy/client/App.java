@@ -53,7 +53,7 @@ public class App {
 				host = cmd.getOptionValue("h");
 				user = cmd.getOptionValue("u");
 				pwd  = cmd.getOptionValue("p");
-				Client client = ResourceClientFactory.createResourceClientWithDefault(host, user, pwd);
+				ResourceClient client = ResourceClientFactory.createResourceClientWithDefault(host, user, pwd);
 				System.out.println("====== Welcome to HIT Resource Deployer ======");
 				System.out.println("To exit enter 'q'");
 				System.out.println("List of possible commands :");

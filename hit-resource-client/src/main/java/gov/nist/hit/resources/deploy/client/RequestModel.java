@@ -4,20 +4,17 @@ public class RequestModel {
 	
 	private String url;
 	private Long id;
-	private String zip;
 	
 	public RequestModel(String url, Long id) {
 		super();
 		this.url = url;
 		this.id = id;
-		this.zip = "";
 	}
 	
 	public RequestModel(String url) {
 		super();
 		this.url = url;
 		this.id = -1L;
-		this.zip = "";
 	}
 	
 	public RequestModel() {
@@ -35,12 +32,6 @@ public class RequestModel {
 	}
 	public void setId(Long id) {
 		this.id = id;
-	}
-	public String getZip() {
-		return zip;
-	}
-	public void setZip(String zip) {
-		this.zip = zip;
 	}
 	
 	
