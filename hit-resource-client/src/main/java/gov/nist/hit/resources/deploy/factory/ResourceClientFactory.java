@@ -24,6 +24,26 @@ public class ResourceClientFactory {
     	
     	return new ResourceClient(host,username,password,config);
 	}
+	public static ResourceClient createResourceClientWithDefault(String host,String authorization){
+		ApiConfig config = new ApiConfig();
+    	config.setContext("/iztool");
+    	config.setMainMapping("/api/editResources");
+    	config.setAddOrUpdateTestStep("/cb/addOrUpdate/testStep");
+    	config.setAddOrUpdateTestPlan("/cb/addOrUpdate/testPlan");
+    	config.setAddOrUpdateCFTestCase("/cf/addOrUpdate/testCase");
+    	config.setAddOrUpdateProfile("/global/addOrUpdate/profile");
+    	config.setAddOrUpdateConstraints("/global/addOrUpdate/constraints");
+    	config.setAddOrUpdateValueSet("/global/addOrUpdate/valueSet");
+    	config.setAddTestCaseG("/cb/add/testCase/to/testCaseGroup");
+    	config.setAddTestGroupP("/cb/add/testCaseGroup/to/testPlan");
+    	config.setAddTestCaseP("/cb/add/testCase/to/testPlan");
+    	config.setAddTestGroupG("/cb/add/testCaseGroup/to/testCaseGroup");
+    	config.setUpdateTestCase("/cb/update/testCase");
+    	config.setUpdateTestGroup("/cb/update/testCaseGroup");
+    	
+    	return new ResourceClient(host,authorization,config);
+	}
+	
 	
 	public static ResourceClient createResourceClient(String host, String username, String password, ApiConfig config){
     	return new ResourceClient(host,username,password,config);

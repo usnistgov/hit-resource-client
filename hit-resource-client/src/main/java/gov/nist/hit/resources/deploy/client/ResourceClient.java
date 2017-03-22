@@ -2,11 +2,21 @@ package gov.nist.hit.resources.deploy.client;
 
 import gov.nist.hit.resources.deploy.config.ApiConfig;
 
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+
 import org.apache.commons.codec.binary.Base64;
+import org.apache.http.client.HttpClient;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLContextBuilder;
+import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
+import org.apache.http.impl.client.HttpClients;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
 public class ResourceClient {
@@ -18,8 +28,39 @@ public class ResourceClient {
 	
 	public ResourceClient(String host, String username, String password) {
 		super();
+		
     	this.authorization = token(username,password);
-    	this.tmpl = new RestTemplate();
+    
+        SSLConnectionSocketFactory socketFactory;
+		try {
+			socketFactory = new SSLConnectionSocketFactory(new SSLContextBuilder().loadTrustMaterial(null, new TrustSelfSignedStrategy()).build());
+		       HttpClient httpClient = HttpClients.custom().setSSLSocketFactory(socketFactory).build();
+		       HttpComponentsClientHttpRequestFactory fct = new HttpComponentsClientHttpRequestFactory(httpClient);
+		        this.tmpl = new RestTemplate(fct);
+		} catch (KeyManagementException | NoSuchAlgorithmException | KeyStoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+ 
+	}
+	public ResourceClient(String host, String authorization,ApiConfig config) {
+		super();
+		this.config = config;
+    	this.accessPoint = host + config.getContext() + config.getMainMapping();
+    	this.authorization =authorization;
+    	//this.tmpl = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
+    	 SSLConnectionSocketFactory socketFactory;
+ 		try {
+ 			socketFactory = new SSLConnectionSocketFactory(new SSLContextBuilder().loadTrustMaterial(null, new TrustSelfSignedStrategy()).build());
+ 		       HttpClient httpClient = HttpClients.custom().setSSLSocketFactory(socketFactory).build();
+
+ 		      HttpComponentsClientHttpRequestFactory fct = new HttpComponentsClientHttpRequestFactory(httpClient);
+		        this.tmpl = new RestTemplate(fct);
+ 		} catch (KeyManagementException | NoSuchAlgorithmException | KeyStoreException e) {
+ 			// TODO Auto-generated catch block
+ 			e.printStackTrace();
+ 		}
 	}
 	
 	public ResourceClient(String host, String username, String password, ApiConfig config) {
