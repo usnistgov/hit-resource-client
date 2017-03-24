@@ -15,6 +15,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
@@ -24,6 +25,7 @@ public class ResourceClient {
 	private String authorization;
 	private ApiConfig config;
 	private String accessPoint;
+	private String loginURL;
 	private RestTemplate tmpl;
 	
 	public ResourceClient(String host, String username, String password) {
@@ -48,6 +50,7 @@ public class ResourceClient {
 		super();
 		this.config = config;
     	this.accessPoint = host + config.getContext() + config.getMainMapping();
+    	this.loginURL = host + config.getContext() + config.getLoginEndPoint();
     	this.authorization =authorization;
     	//this.tmpl = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
     	 SSLConnectionSocketFactory socketFactory;
@@ -67,6 +70,8 @@ public class ResourceClient {
 		this(host,username,password);
     	this.config = config;
     	this.accessPoint = host + config.getContext() + config.getMainMapping();
+    	this.loginURL = host + config.getContext() + config.getLoginEndPoint();
+
 	}
 
 	public ResponseEntity<String> addOrUpdateTestStep(RequestModel m) {
@@ -141,6 +146,7 @@ public class ResourceClient {
     	return response;
 	}
 	
+	
 	public HttpEntity<RequestModel> createHttpEntity(RequestModel m){
 		HttpHeaders headers = new HttpHeaders();
     	headers.add("Authorization", "Basic " + authorization);
@@ -158,6 +164,15 @@ public class ResourceClient {
     	byte[] plainCredsBytes = plainCreds.getBytes();
     	byte[] base64CredsBytes = Base64.encodeBase64(plainCredsBytes);
     	return new String(base64CredsBytes);
+	}
+	
+	public boolean validCredentials(){
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Authorization", "Basic " + authorization);
+		HttpEntity<String> entity = new HttpEntity<String>("",headers);
+    	ResponseEntity<String> response = tmpl.exchange(this.loginURL, HttpMethod.GET,  entity, String.class);
+    	return response.getStatusCode() == HttpStatus.OK;
+
 	}
 
 }
