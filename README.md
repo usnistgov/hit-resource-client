@@ -26,6 +26,15 @@ Where :
 
 ## Client Methods
 
+### Check Credentials 
+```java
+public boolean validCredentials()
+```
+Retuns TRUE  if the credentials used to create a ResourceClient instance are correct. (user registred in remote server)
+Return FALSE if the credentials used to create a ResourceClient instance are incorrect. (user not found in remote server)
+
+### API Methods
+
 All methods take as parameter an instance of **RequestModel** class which is a POJO with two attributes :
 - *Id*  : Id of the containing object if any
 - *Url* : Url of the ziped resource **[Always Required]**
