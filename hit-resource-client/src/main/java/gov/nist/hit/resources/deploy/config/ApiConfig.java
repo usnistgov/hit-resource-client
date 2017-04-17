@@ -16,6 +16,7 @@ public class ApiConfig {
 	  private String addOrUpdateProfile;
 	  private String addOrUpdateValueSet;
 	  private String addOrUpdateConstraints;
+	  private String loginEndPoint;
 	  
 	  
 	public ApiConfig() {
@@ -123,6 +124,22 @@ public class ApiConfig {
 	public void setAddOrUpdateConstraints(String addOrUpdateConstraints) {
 		this.addOrUpdateConstraints = addOrUpdateConstraints;
 	}
-	  
+
+
+	/**
+	 * @return the loginEndPoint
+	 */
+	public String getLoginEndPoint() {
+		return loginEndPoint;
+	}
+
+
+	/**
+	 * @param loginEndPoint the loginEndPoint to set
+	 */
+	public void setLoginEndPoint(String loginEndPoint) {
+		this.loginEndPoint = loginEndPoint;
+	}
+	
 	  
 }

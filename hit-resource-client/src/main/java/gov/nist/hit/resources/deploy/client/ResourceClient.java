@@ -2,11 +2,22 @@ package gov.nist.hit.resources.deploy.client;
 
 import gov.nist.hit.resources.deploy.config.ApiConfig;
 
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+
 import org.apache.commons.codec.binary.Base64;
+import org.apache.http.client.HttpClient;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLContextBuilder;
+import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
+import org.apache.http.impl.client.HttpClients;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
 public class ResourceClient {
@@ -14,18 +25,53 @@ public class ResourceClient {
 	private String authorization;
 	private ApiConfig config;
 	private String accessPoint;
+	private String loginURL;
 	private RestTemplate tmpl;
 	
 	public ResourceClient(String host, String username, String password) {
 		super();
+		
     	this.authorization = token(username,password);
-    	this.tmpl = new RestTemplate();
+    
+        SSLConnectionSocketFactory socketFactory;
+		try {
+			socketFactory = new SSLConnectionSocketFactory(new SSLContextBuilder().loadTrustMaterial(null, new TrustSelfSignedStrategy()).build());
+		       HttpClient httpClient = HttpClients.custom().setSSLSocketFactory(socketFactory).build();
+		       HttpComponentsClientHttpRequestFactory fct = new HttpComponentsClientHttpRequestFactory(httpClient);
+		        this.tmpl = new RestTemplate(fct);
+		} catch (KeyManagementException | NoSuchAlgorithmException | KeyStoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+ 
+	}
+	public ResourceClient(String host, String authorization,ApiConfig config) {
+		super();
+		this.config = config;
+    	this.accessPoint = host + config.getContext() + config.getMainMapping();
+    	this.loginURL = host + config.getContext() + config.getLoginEndPoint();
+    	this.authorization =authorization;
+    	//this.tmpl = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
+    	 SSLConnectionSocketFactory socketFactory;
+ 		try {
+ 			socketFactory = new SSLConnectionSocketFactory(new SSLContextBuilder().loadTrustMaterial(null, new TrustSelfSignedStrategy()).build());
+ 		       HttpClient httpClient = HttpClients.custom().setSSLSocketFactory(socketFactory).build();
+
+ 		      HttpComponentsClientHttpRequestFactory fct = new HttpComponentsClientHttpRequestFactory(httpClient);
+		        this.tmpl = new RestTemplate(fct);
+ 		} catch (KeyManagementException | NoSuchAlgorithmException | KeyStoreException e) {
+ 			// TODO Auto-generated catch block
+ 			e.printStackTrace();
+ 		}
 	}
 	
 	public ResourceClient(String host, String username, String password, ApiConfig config) {
 		this(host,username,password);
     	this.config = config;
     	this.accessPoint = host + config.getContext() + config.getMainMapping();
+    	this.loginURL = host + config.getContext() + config.getLoginEndPoint();
+
 	}
 
 	public ResponseEntity<String> addOrUpdateTestStep(RequestModel m) {
@@ -100,6 +146,7 @@ public class ResourceClient {
     	return response;
 	}
 	
+	
 	public HttpEntity<RequestModel> createHttpEntity(RequestModel m){
 		HttpHeaders headers = new HttpHeaders();
     	headers.add("Authorization", "Basic " + authorization);
@@ -117,6 +164,15 @@ public class ResourceClient {
     	byte[] plainCredsBytes = plainCreds.getBytes();
     	byte[] base64CredsBytes = Base64.encodeBase64(plainCredsBytes);
     	return new String(base64CredsBytes);
+	}
+	
+	public boolean validCredentials(){
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Authorization", "Basic " + authorization);
+		HttpEntity<String> entity = new HttpEntity<String>("",headers);
+    	ResponseEntity<String> response = tmpl.exchange(this.loginURL, HttpMethod.GET,  entity, String.class);
+    	return response.getStatusCode() == HttpStatus.OK;
+
 	}
 
 }
