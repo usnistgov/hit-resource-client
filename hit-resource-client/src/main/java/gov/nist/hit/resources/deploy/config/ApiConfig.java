@@ -17,6 +17,11 @@ public class ApiConfig {
 	  private String addOrUpdateValueSet;
 	  private String addOrUpdateConstraints;
 	  private String loginEndPoint;
+	  private String deleteTestPlan;
+	  private String deleteCFTestCase;
+	  private String deleteCBTestCase;
+	  private String deleteTestCaseGroup;
+	  private String deleteTestStep;
 	  
 	  
 	public ApiConfig() {
@@ -140,6 +145,56 @@ public class ApiConfig {
 	public void setLoginEndPoint(String loginEndPoint) {
 		this.loginEndPoint = loginEndPoint;
 	}
-	
-	  
+
+
+	public String getDeleteTestPlan(Long id) {
+		return deleteTestPlan+id;
+	}
+
+
+	public void setDeleteTestPlan(String deleteTestPlan) {
+		this.deleteTestPlan = deleteTestPlan;
+	}
+
+
+	public String getDeleteCFTestCase(Long id) {
+		return deleteCFTestCase+id;
+	}
+
+
+	public void setDeleteCFTestCase(String deleteCFTestCase) {
+		this.deleteCFTestCase = deleteCFTestCase;
+	}
+
+
+	public String getDeleteCBTestCase(Long id) {
+		return deleteCBTestCase+id;
+	}
+
+
+	public void setDeleteCBTestCase(String deleteCBTestCase) {
+		this.deleteCBTestCase = deleteCBTestCase;
+	}
+
+
+	public String getDeleteTestCaseGroup(Long id) {
+		return deleteTestCaseGroup+id;
+	}
+
+
+	public void setDeleteTestCaseGroup(String deleteTestCaseGroup) {
+		this.deleteTestCaseGroup = deleteTestCaseGroup;
+	}
+
+
+	public String getDeleteTestStep(Long id) {
+		return deleteTestStep+id;
+	}
+
+
+	public void setDeleteTestStep(String deleteTestStep) {
+		this.deleteTestStep = deleteTestStep;
+	}	
+
+
 }

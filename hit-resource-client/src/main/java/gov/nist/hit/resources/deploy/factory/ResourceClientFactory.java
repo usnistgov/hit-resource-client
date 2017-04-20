@@ -16,24 +16,31 @@ public class ResourceClientFactory {
 	
 	public static ApiConfig defaultConfig(){
 		ApiConfig config = new ApiConfig();
+		String edit = "editResources";
+		String delete = "deleteResources";
 		config.setLoginEndPoint("/api/accounts/login");
     	config.setContext("");
-    	config.setMainMapping("/api/editResources");
-    	config.setAddOrUpdateTestStep("/cb/addOrUpdate/testStep");
-    	config.setAddOrUpdateTestPlan("/cb/addOrUpdate/testPlan");
-    	config.setAddOrUpdateCFTestCase("/cf/addOrUpdate/testCase");
-    	config.setAddOrUpdateProfile("/global/addOrUpdate/profile");
-    	config.setAddOrUpdateConstraints("/global/addOrUpdate/constraints");
-    	config.setAddOrUpdateValueSet("/global/addOrUpdate/valueSet");
-    	config.setAddTestCaseG("/cb/add/testCase/to/testCaseGroup");
-    	config.setAddTestGroupP("/cb/add/testCaseGroup/to/testPlan");
-    	config.setAddTestCaseP("/cb/add/testCase/to/testPlan");
-    	config.setAddTestGroupG("/cb/add/testCaseGroup/to/testCaseGroup");
-    	config.setUpdateTestCase("/cb/update/testCase");
-    	config.setUpdateTestGroup("/cb/update/testCaseGroup");
-    	
+    	config.setMainMapping("/api/");
+    	config.setAddOrUpdateTestStep(edit+"/cb/addOrUpdate/testStep");
+    	config.setAddOrUpdateTestPlan(edit+"/cb/addOrUpdate/testPlan");
+    	config.setAddOrUpdateCFTestCase(edit+"/cf/addOrUpdate/testCase");
+    	config.setAddOrUpdateProfile(edit+"/global/addOrUpdate/profile");
+    	config.setAddOrUpdateConstraints(edit+"/global/addOrUpdate/constraints");
+    	config.setAddOrUpdateValueSet(edit+"/global/addOrUpdate/valueSet");
+    	config.setAddTestCaseG(edit+"/cb/add/testCase/to/testCaseGroup");
+    	config.setAddTestGroupP(edit+"/cb/add/testCaseGroup/to/testPlan");
+    	config.setAddTestCaseP(edit+"/cb/add/testCase/to/testPlan");
+    	config.setAddTestGroupG(edit+"/cb/add/testCaseGroup/to/testCaseGroup");
+    	config.setUpdateTestCase(edit+"/cb/update/testCase");
+    	config.setUpdateTestGroup(edit+"/cb/update/testCaseGroup");
+    	config.setDeleteTestPlan(delete+"/cb/delete/testPlan/");
+    	config.setDeleteCBTestCase(delete+"/cb/delete/testCase/");
+    	config.setDeleteCFTestCase(delete+"/cf/delete/testCase/");
+    	config.setDeleteTestCaseGroup(delete+"/cb/delete/testCaseGroup/");
+    	config.setDeleteTestStep(delete+"/cb/delete/testStep/");
     	return config;
 	}
+	
 	
 	public static ResourceClient createResourceClient(String host, String username, String password, ApiConfig config){
     	return new ResourceClient(host,username,password,config);

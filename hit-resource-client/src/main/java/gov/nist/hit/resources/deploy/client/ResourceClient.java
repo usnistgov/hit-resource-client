@@ -1,6 +1,7 @@
 package gov.nist.hit.resources.deploy.client;
 
 import gov.nist.hit.resources.deploy.config.ApiConfig;
+import gov.nist.hit.resources.deploy.factory.ResourceClientFactory;
 
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
@@ -52,7 +53,6 @@ public class ResourceClient {
     	this.accessPoint = host + config.getContext() + config.getMainMapping();
     	this.loginURL = host + config.getContext() + config.getLoginEndPoint();
     	this.authorization =authorization;
-    	//this.tmpl = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
     	 SSLConnectionSocketFactory socketFactory;
  		try {
  			socketFactory = new SSLConnectionSocketFactory(new SSLContextBuilder().loadTrustMaterial(null, new TrustSelfSignedStrategy()).build());
@@ -61,7 +61,6 @@ public class ResourceClient {
  		      HttpComponentsClientHttpRequestFactory fct = new HttpComponentsClientHttpRequestFactory(httpClient);
 		        this.tmpl = new RestTemplate(fct);
  		} catch (KeyManagementException | NoSuchAlgorithmException | KeyStoreException e) {
- 			// TODO Auto-generated catch block
  			e.printStackTrace();
  		}
 	}
@@ -153,6 +152,37 @@ public class ResourceClient {
     	return new HttpEntity<>(m,headers);
 	}
 	
+	//-- DELETE METHODS
+	public ResponseEntity<String> deleteTestPlan(Long id) {
+    	String URL = URL(config.getDeleteTestPlan(id));
+    	ResponseEntity<String> response = tmpl.exchange(URL, HttpMethod.DELETE, new HttpEntity<String>("{}"), String.class);
+    	return response;
+	}
+	
+	public ResponseEntity<String> deleteCBTestCase(Long id) {
+    	String URL = URL(config.getDeleteCBTestCase(id));
+    	ResponseEntity<String> response = tmpl.exchange(URL, HttpMethod.DELETE, new HttpEntity<String>("{}"), String.class);
+    	return response;
+	}
+	
+	public ResponseEntity<String> deleteCFTestCase(Long id) {
+    	String URL = URL(config.getDeleteCFTestCase(id));
+    	ResponseEntity<String> response = tmpl.exchange(URL, HttpMethod.DELETE, new HttpEntity<String>("{}"), String.class);
+    	return response;
+	}
+	
+	public ResponseEntity<String> deleteTestCaseGroup(Long id) {
+    	String URL = URL(config.getDeleteTestCaseGroup(id));
+    	ResponseEntity<String> response = tmpl.exchange(URL, HttpMethod.DELETE, new HttpEntity<String>("{}"), String.class);
+    	return response;
+	}
+	
+	public ResponseEntity<String> deleteTestStep(Long id) {
+    	String URL = URL(config.getDeleteTestStep(id));
+    	ResponseEntity<String> response = tmpl.exchange(URL, HttpMethod.DELETE, new HttpEntity<String>("{}"), String.class);
+    	return response;
+	}
+	
 	public String URL(String resource){
 		StringBuilder strB = new StringBuilder("");
 		strB.append(this.accessPoint).append(resource);
@@ -174,5 +204,6 @@ public class ResourceClient {
     	return response.getStatusCode() == HttpStatus.OK;
 
 	}
+	
 
 }
