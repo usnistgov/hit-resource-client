@@ -13,7 +13,6 @@ public class Payload {
 	private InputStream zipFile;
 	private Long id;
 	
-	
 	public Payload(InputStream zipFile, Long id) {
 		super();
 		this.zipFile = zipFile;
@@ -38,12 +37,15 @@ public class Payload {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
-	public LinkedMultiValueMap<String, Object> asMultiPartForm(){
+
+	public LinkedMultiValueMap<String, Object> asMultiPartForm(Scope scope){
 		LinkedMultiValueMap<String, Object> parts = new LinkedMultiValueMap<>();
 		File f = Utils.toFile(zipFile, "bundle", ".zip");
 		parts.add("file", new FileSystemResource(f));
 		parts.add("id", id);
+		if(scope != null){
+			parts.add("scope", scope);
+		}
 		return parts;
 	}
 }

@@ -5,29 +5,12 @@ import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 
-import gov.nist.hit.resources.deploy.exception.InsupportedApiMethod;
-import gov.nist.hit.resources.deploy.model.Payload;
-import gov.nist.hit.resources.deploy.model.ResourceType;
-
-
+import gov.nist.hit.resources.deploy.exception.UserNotFoundException;
 
 public class Main {
 
-	public static void main(String[] args) throws InsupportedApiMethod, IOException {
-		try {
-			SSLHL7v2ResourceClient client = new SSLHL7v2ResourceClient("http://localhost:8080/iztool","");
-//			Payload pl = new Payload(Main.class.getResourceAsStream("/Contextbased.zip"));
-//			client.addOrUpdate(pl, ResourceType.TEST_PLAN);
-			client.delete(193745134L, ResourceType.TEST_PLAN);
-		} catch (KeyManagementException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (KeyStoreException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public static void main(String[] args) throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException, IOException, UserNotFoundException {
+		SSLHL7v2ResourceClient client = new SSLHL7v2ResourceClient("http://localhost:8080/gvt/", "hossam", "12QWASZx");
+		System.out.println(client.validCredentials());
 	}
 }

@@ -2,16 +2,7 @@ package gov.nist.hit.resources.deploy.config;
 
 import java.io.IOException;
 import java.util.Properties;
-
-import javax.annotation.Resource;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Service;
-
 import gov.nist.hit.resources.deploy.api.ApiConfig;
 import gov.nist.hit.resources.deploy.exception.InsupportedApiMethod;
 import gov.nist.hit.resources.deploy.model.Action;
@@ -61,31 +52,5 @@ public class HL7v2ResourcesApiConfig implements ApiConfig {
 	public String login() {
 		return prefix+env.getProperty("login");
 	}
-	
-//	public String delete(ResourceType entity) throws InsupportedApiMethod {
-//		String main = this.prefix + this.delete;
-//		switch(entity){
-//		case TEST_CASE : return main + env.getProperty("delete_cbtc");
-//		case CF_TEST_CASE : return main + env.getProperty("delete_cftc");
-//		case TEST_PLAN : return main + env.getProperty("delete_tp");
-//		case TEST_CASE_GROUP : return main + env.getProperty("delete_tg");
-//		case TEST_STEP : return main + env.getProperty("delete_ts");
-//		default : throw new InsupportedApiMethod();
-//		}
-//	}
-//	
-//	public String add(ResourceType entity, ResourceType container) throws InsupportedApiMethod {
-//		String main = this.prefix + this.delete;
-//		
-//		switch(entity){
-//		case TEST_CASE : container.equals(ResourceType.TEST_CASE_GROUP) ? main + env.getProperty("add_tc_tg");
-//		case TEST_CASE_GROUP : return main + env.getProperty("delete_tg");
-//		default : throw new InsupportedApiMethod();
-//		}
-//	}
-//	
-//	public String addOrUpdate(ResourceType entity)
-	
-	
 
 }
