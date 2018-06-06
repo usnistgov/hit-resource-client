@@ -38,11 +38,12 @@ public class Payload {
 		this.id = id;
 	}
 
-	public LinkedMultiValueMap<String, Object> asMultiPartForm(Scope scope){
+	public LinkedMultiValueMap<String, Object> asMultiPartForm(Scope scope, String domain){
 		LinkedMultiValueMap<String, Object> parts = new LinkedMultiValueMap<>();
 		File f = Utils.toFile(zipFile, "bundle", ".zip");
 		parts.add("file", new FileSystemResource(f));
 		parts.add("id", id);
+		parts.add("domain", domain);
 		if(scope != null){
 			parts.add("scope", scope);
 		}

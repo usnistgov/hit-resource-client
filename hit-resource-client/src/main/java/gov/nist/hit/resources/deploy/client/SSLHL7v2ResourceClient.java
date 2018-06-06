@@ -1,15 +1,17 @@
 package gov.nist.hit.resources.deploy.client;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -27,6 +29,7 @@ import gov.nist.hit.resources.deploy.config.HL7v2ResourcesApiConfig;
 import gov.nist.hit.resources.deploy.exception.InsupportedApiMethod;
 import gov.nist.hit.resources.deploy.exception.UserNotFoundException;
 import gov.nist.hit.resources.deploy.model.Action;
+import gov.nist.hit.resources.deploy.model.Domain;
 import gov.nist.hit.resources.deploy.model.Payload;
 import gov.nist.hit.resources.deploy.model.RegistredGrant;
 import gov.nist.hit.resources.deploy.model.ResourceType;
@@ -55,14 +58,14 @@ public class SSLHL7v2ResourceClient implements Client {
 		return host + mapping; 
 	}
 
-	public ResponseEntity<String> reach(HttpMethod method, Payload model, String endPoint, Scope scope) {
+	public ResponseEntity<String> reach(HttpMethod method, Payload model, String endPoint, Scope scope, String domain) {
 		HttpHeaders headers = new HttpHeaders();
 	   
 	    headers.add("Authorization", "Basic " + token);
 	    HttpEntity<LinkedMultiValueMap<String, Object>> requestEntity = null;
 	    
 	    if(model != null){
-	    	requestEntity = new HttpEntity<LinkedMultiValueMap<String, Object>>(model.asMultiPartForm(scope), headers);
+	    	requestEntity = new HttpEntity<LinkedMultiValueMap<String, Object>>(model.asMultiPartForm(scope,domain), headers);
 	    	headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 	    }
 	    else {
@@ -103,25 +106,28 @@ public class SSLHL7v2ResourceClient implements Client {
 	@Override
 	public ResponseEntity<String> update(Payload model, ResourceType entity) throws InsupportedApiMethod {
 		String mapping = config.urlFor(Action.UPDATE, entity, null);
-		return this.reach(HttpMethod.POST, model, this.createURL(mapping), null);
+		return this.reach(HttpMethod.POST, model, this.createURL(mapping), null, null);
 	}
 
 	@Override
-	public ResponseEntity<String> addOrUpdate(Payload model, ResourceType entity, Scope scope) throws InsupportedApiMethod {
+	public ResponseEntity<String> addOrUpdate(Payload model, ResourceType entity, Scope scope, String domain) throws InsupportedApiMethod {
 		String mapping = config.urlFor(Action.ADD_OR_UPDATE, entity, null);
-		return this.reach(HttpMethod.POST, model, this.createURL(mapping), scope);
+		if(entity.equals(ResourceType.TEST_PLAN) && (domain == null || domain.isEmpty())){
+			throw new IllegalArgumentException("Domain should be valued");
+		}
+		return this.reach(HttpMethod.POST, model, this.createURL(mapping), scope, domain);
 	}
 
 	@Override
-	public ResponseEntity<String> add(Payload model, ResourceType entity, ResourceType container) throws InsupportedApiMethod {
+	public ResponseEntity<String> add(Payload model, ResourceType entity, ResourceType container, Scope scope, String domain) throws InsupportedApiMethod {
 		String mapping = config.urlFor(Action.ADD, entity, container);
-		return this.reach(HttpMethod.POST, model, this.createURL(mapping), null);
+		return this.reach(HttpMethod.POST, model, this.createURL(mapping), null, domain);
 	}
 
 	@Override
 	public ResponseEntity<String> delete(Long id, ResourceType entity) throws InsupportedApiMethod {
 		String mapping = config.urlFor(Action.DELETE, entity, null) + id;
-		return this.reach(HttpMethod.DELETE, null, this.createURL(mapping), null);
+		return this.reach(HttpMethod.DELETE, null, this.createURL(mapping), null, null);
 	}
 
 	public RestTemplate getWire() {
@@ -154,6 +160,39 @@ public class SSLHL7v2ResourceClient implements Client {
 
 	public void setHost(String host) {
 		this.host = host;
+	}
+
+	
+	@Override
+	public ResponseEntity<Domain[]> getDomainByUsername() {
+		HttpHeaders headers = new HttpHeaders();
+		   
+	    headers.add("Authorization", "Basic " + token);
+	    HttpEntity<LinkedMultiValueMap<String, Object>> requestEntity = new HttpEntity<LinkedMultiValueMap<String, Object>>(headers);;
+	    
+		return wire.exchange(this.createURL("api/domains/findByUser"), HttpMethod.GET, requestEntity, Domain[].class);
+	}
+	
+
+	@Override
+	public ResponseEntity<String> uploadZip(InputStream file, String domain) {
+		HttpHeaders headers = new HttpHeaders();
+		   
+	    headers.add("Authorization", "Basic " + token);
+	    HttpEntity<LinkedMultiValueMap<String, Object>> requestEntity = new HttpEntity<LinkedMultiValueMap<String, Object>>(multipart(file, domain), headers);
+	    
+		String url = this.createURL("api/cb/management/uploadZip");
+		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+		
+		return wire.exchange(url, HttpMethod.POST, requestEntity, String.class);
+	}
+	
+	private LinkedMultiValueMap<String, Object> multipart(InputStream file, String domain){
+		LinkedMultiValueMap<String, Object> parts = new LinkedMultiValueMap<>();
+		File f = Utils.toFile(file, "bundle", ".zip");
+		parts.add("file", new FileSystemResource(f));
+		parts.add("domain", domain);
+		return parts;
 	}
 	
 }
